@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# install.sh — symlink khe-ai-rules into ~/.claude and ~/.codex
+# install.sh - symlink khe-ai-rules into ~/.claude and ~/.codex
 #
 # Re-runs are idempotent: existing correct symlinks are skipped.
 
@@ -38,7 +38,7 @@ link "$repo/CLAUDE.md"          "$HOME/.claude/CLAUDE.md"
 link "$repo/settings.json"      "$HOME/.claude/settings.json"
 link "$repo/codex/config.toml"  "$HOME/.codex/config.toml"
 
-# Directories — Claude Code lazy-loads skills/agents from ~/.claude/skills/ and ~/.claude/agents/
+# Directories - Claude Code lazy-loads skills/agents from ~/.claude/skills/ and ~/.claude/agents/
 link "$repo/skills"             "$HOME/.claude/skills"
 link "$repo/agents"             "$HOME/.claude/agents"
 link "$repo/hooks"              "$HOME/.claude/hooks"

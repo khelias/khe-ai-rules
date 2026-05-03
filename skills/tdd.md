@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Use when adding features or fixing bugs that lack test coverage — RED/GREEN/REFACTOR with git checkpoints.
+description: Use when adding features or fixing bugs that lack test coverage - RED/GREEN/REFACTOR with git checkpoints.
 ---
 
 # TDD workflow
@@ -21,10 +21,10 @@ Write the test first. Make it fail. Make it pass. Refactor.
 
 ## Cycle
 
-### 1. RED — write a failing test
+### 1. RED - write a failing test
 
 - Write a test that captures the new behaviour.
-- Run it. Confirm it fails for the **intended** reason — not a syntax error, not a missing import, not unrelated breakage.
+- Run it. Confirm it fails for the **intended** reason - not a syntax error, not a missing import, not unrelated breakage.
 - A test that compiles but isn't executed does NOT count as RED.
 
 If under git: commit the failing test before continuing.
@@ -32,7 +32,7 @@ If under git: commit the failing test before continuing.
 test: reproduce <bug or behaviour>
 ```
 
-### 2. GREEN — minimum code to pass
+### 2. GREEN - minimum code to pass
 
 - Implement the smallest change that makes the failing test pass.
 - Don't add extra features. Don't refactor yet.
@@ -44,7 +44,7 @@ fix: <bug>            (for bug fixes)
 feat: <behaviour>     (for new features)
 ```
 
-### 3. REFACTOR — clean up
+### 3. REFACTOR - clean up
 
 - Improve naming, extract helpers, remove duplication.
 - Re-run tests after each change. They stay green.

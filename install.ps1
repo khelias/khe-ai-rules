@@ -1,11 +1,11 @@
-# install.ps1 — symlink khe-ai-rules into ~/.claude and ~/.codex
+# install.ps1 - symlink khe-ai-rules into ~/.claude and ~/.codex
 #
 # Windows requires Developer Mode enabled OR an admin PowerShell to create
 # symlinks. With Dev Mode enabled, sign out + sign in once after enabling
 # so your session token gets the SeCreateSymbolicLinkPrivilege.
 #
 # Without either: file symlinks fall back to copy (re-run after edits to sync).
-# Directory symlinks cannot fall back — they require admin or Dev Mode.
+# Directory symlinks cannot fall back - they require admin or Dev Mode.
 #
 # Re-runs are idempotent: existing correct symlinks are skipped.
 
@@ -66,7 +66,7 @@ Link-Path "$repoRoot\CLAUDE.md"          "$claudeDir\CLAUDE.md"          "file"
 Link-Path "$repoRoot\settings.json"      "$claudeDir\settings.json"      "file"
 Link-Path "$repoRoot\codex\config.toml"  "$codexDir\config.toml"         "file"
 
-# Directories — Claude Code lazy-loads skills/agents from ~/.claude/skills/ and ~/.claude/agents/
+# Directories - Claude Code lazy-loads skills/agents from ~/.claude/skills/ and ~/.claude/agents/
 Link-Path "$repoRoot\skills"             "$claudeDir\skills"             "dir"
 Link-Path "$repoRoot\agents"             "$claudeDir\agents"             "dir"
 Link-Path "$repoRoot\hooks"              "$claudeDir\hooks"              "dir"

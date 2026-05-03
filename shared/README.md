@@ -10,9 +10,9 @@ project `CLAUDE.md` / `.cursor/rules/` into here.
 
 Likely files (eventually):
 
-- `typescript-vite.md` — TypeScript + Vite project conventions
-- `playwright.md` — Playwright test patterns
-- `git-conventions.md` — branch / PR style
+- `typescript-vite.md` - TypeScript + Vite project conventions
+- `playwright.md` - Playwright test patterns
+- `git-conventions.md` - branch / PR style
 
 ## Why copy, not import
 

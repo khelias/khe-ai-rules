@@ -9,18 +9,36 @@ User-level instructions for AI coding agents. Auto-loaded by:
 This file holds **personal preferences** that apply to every project.
 For project-specific instructions, use a per-project `AGENTS.md`.
 
-Keep this file under 200 lines. It's loaded into every session — bigger files cost tokens forever.
+Keep this file under 200 lines. It's loaded into every session, so size costs tokens forever.
 
 ---
 
 ## Communication
 
-<!-- Phase 2: language, tone, response length, formatting preferences -->
+- Conversation language: Estonian (primary working language).
+- Code, identifiers, in-code comments: English (industry convention, portability).
+- User-facing translations and localization: Estonian, grammatically correct. No machine-translated approximations. If unsure, ask.
+- Match response weight to question weight. Routine work gets terse output. Architectural or decision-heavy work gets the reasoning trail. The user works with the agent partly to learn, not just to receive magic results.
+- Avoid AI-tells that signal machine-generated output:
+  - No emoji.
+  - No em-dashes. Use a regular hyphen, comma, or rephrase.
+  - No bloated openings ("Great question!", "Certainly!", "I'll help you with that").
+  - No bloated closings ("Let me know if you need anything else", "Hope this helps").
+  - No unnecessary headers, tables, or bullet lists on simple answers. Match formatting to content weight.
 
-## Code style — universal preferences
+## Code style
 
-<!-- Phase 2: principles that apply across all languages
-e.g., naming, comment philosophy, error handling discipline -->
+- All code, identifiers, file names, in-code comments: English.
+- Estonian appears only in user-facing strings, i18n and translation tables (grammatically correct), and conversation with the user.
+- Comments inside code: only when the WHY is non-obvious (covered in Boundaries below).
+
+## Documentation
+
+- Trivial changes (typos, small internal refactors) do not need README or doc updates. Adding docs for every change adds noise.
+- However, no module should be completely undocumented. If you touch a feature that has no doc string or no README mention, add a one-line summary while you're there.
+- When uncertain whether something needs documenting, ASK before adding.
+
+This is a judgment call, not a hard rule.
 
 ## Verification
 
@@ -29,7 +47,7 @@ The agent MUST verify changes before declaring done:
 - Run the project's test command
 - Run the project's typecheck/lint command
 - For UI changes, verify in a running browser if a dev server is available
-- Report verification results explicitly — successes AND failures
+- Report verification results explicitly, both successes and failures
 
 If verification can't be performed in this environment, say so. Do not claim success.
 
@@ -53,7 +71,7 @@ If verification can't be performed in this environment, say so. Do not claim suc
 - Skip git hooks (`--no-verify`)
 - Commit secrets, `.env` files, credentials
 - Add unrequested documentation files (READMEs, CHANGELOGs)
-- Add comments explaining WHAT code does — only WHY when non-obvious
+- Add comments explaining WHAT code does. Only WHY when non-obvious.
 
 ## File hygiene
 

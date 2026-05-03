@@ -1,7 +1,7 @@
 # OpenAI Codex CLI configuration
 # Spec: https://developers.openai.com/codex/guides/agents-md
 #
-# Defaults documented below — uncomment and adjust as needed.
+# Defaults documented below - uncomment and adjust as needed.
 
 # Cap on AGENTS.md size (default 32 KiB). Codex truncates beyond this.
 # project_doc_max_bytes = 32768

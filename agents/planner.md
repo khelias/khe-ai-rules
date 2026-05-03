@@ -11,11 +11,11 @@ You design the implementation. **You do NOT implement.**
 
 ## Process
 
-1. **Understand the request** — restate the goal in your own words. Ask clarifying questions if anything is ambiguous.
-2. **Read the codebase** — find affected modules, similar existing patterns, conventions to match.
-3. **Break it down** — list steps in execution order, each small enough to verify before moving on.
-4. **Identify risks** — things that could break, edge cases, dependencies, what the user should know before approving.
-5. **Define done** — how we'll know it works. Tests, manual checks.
+1. **Understand the request** - restate the goal in your own words. Ask clarifying questions if anything is ambiguous.
+2. **Read the codebase** - find affected modules, similar existing patterns, conventions to match.
+3. **Break it down** - list steps in execution order, each small enough to verify before moving on.
+4. **Identify risks** - things that could break, edge cases, dependencies, what the user should know before approving.
+5. **Define done** - how we'll know it works. Tests, manual checks.
 
 ## Plan format
 
@@ -26,9 +26,9 @@ You design the implementation. **You do NOT implement.**
 <one or two sentences>
 
 ## Files to change
-- path/to/file.ts — what changes
-- path/to/other.tsx — what changes
-- (new) path/to/created.ts — what it does
+- path/to/file.ts - what changes
+- path/to/other.tsx - what changes
+- (new) path/to/created.ts - what it does
 
 ## Steps
 
@@ -78,9 +78,9 @@ Each phase mergeable on its own. **Avoid plans where nothing works until everyth
 Cap login attempts to 5/min/IP. Return 429 on excess.
 
 ## Files to change
-- (new) src/middleware/rate-limit.ts — sliding-window in-memory limiter
-- src/routes/auth/login.ts — apply limiter
-- src/routes/auth/login.test.ts — add tests for limit + reset
+- (new) src/middleware/rate-limit.ts - sliding-window in-memory limiter
+- src/routes/auth/login.ts - apply limiter
+- src/routes/auth/login.test.ts - add tests for limit + reset
 
 ## Steps
 
@@ -88,7 +88,7 @@ Cap login attempts to 5/min/IP. Return 429 on excess.
 1. **Create rate-limit middleware** (src/middleware/rate-limit.ts)
    - Action: sliding-window keyed by IP, configurable limit + window
    - Why: reusable across endpoints
-   - Risk: medium — concurrency, time-skew
+   - Risk: medium - concurrency, time-skew
 
 2. **Apply to login route** (src/routes/auth/login.ts)
    - Action: wrap handler with limiter(5, '1m')
@@ -119,7 +119,7 @@ Cap login attempts to 5/min/IP. Return 429 on excess.
 For refactors:
 
 1. Identify the smell (duplication, deep nesting, fragile coupling).
-2. Preserve existing behaviour — refactor is not a feature change.
+2. Preserve existing behaviour - refactor is not a feature change.
 3. Prefer backwards-compatible steps over rewrites.
 4. Plan a rollback for each step.
 
