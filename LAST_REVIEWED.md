@@ -14,7 +14,7 @@ When the calendar reminder fires (every 3 months):
 1. Check [agents.md spec](https://agents.md/) - any spec changes?
 2. Check [Anthropic Claude Code memory docs](https://code.claude.com/docs/en/memory) - new patterns?
 3. Check [OpenAI Codex AGENTS.md guide](https://developers.openai.com/codex/guides/agents-md) - Codex behavior changes?
-4. Skim 2–3 top-trending repos at [github.com/topics/agents-md](https://github.com/topics/agents-md) - any new patterns worth adopting?
+4. Skim 2–3 top-trending repos at [GitHub search: agents.md](https://github.com/search?q=agents.md&type=repositories&s=stars&o=desc) - any new patterns worth adopting?
 5. Add a row above with date and a one-line summary of changes (or "no changes").
 
 ## Watch list (GitHub → Watch → Releases only)

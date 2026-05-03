@@ -50,6 +50,9 @@ jobs:
             --max-concurrency 5
             --retry-wait-time 2
             --max-retries 2
+            --exclude '^https://medium\.com/'
+            --exclude '^https://(www\.)?(twitter|x)\.com/'
+            --exclude '^https://(www\.)?linkedin\.com/'
             './**/*.md'
           fail: true
 
