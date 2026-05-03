@@ -1,0 +1,14 @@
+# Backups created by install scripts
+*.backup-*
+
+# Local-only overrides (per-machine, not committed)
+*.local.md
+*.local.toml
+*.local.json
+settings.local.json
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
