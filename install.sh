@@ -37,20 +37,6 @@ link() {
     echo "  link    $tgt"
 }
 
-write_if_changed() {
-    local content="$1" tgt="$2"
-    if [[ -L "$tgt" ]]; then
-        local backup="$tgt.backup-$(date +%Y%m%d-%H%M%S)"
-        mv "$tgt" "$backup"
-        echo "  backup  $tgt -> $backup"
-    elif [[ -f "$tgt" ]] && [[ "$(cat "$tgt")" == "$content" ]]; then
-        echo "  skip    $tgt  (already current)"
-        return
-    fi
-    printf '%s\n' "$content" > "$tgt"
-    echo "  write   $tgt"
-}
-
 echo
 echo "Installing khe-ai-rules from: $repo"
 echo "KHE root:                     $khe_root"
@@ -67,14 +53,14 @@ link "$repo/skills"             "$HOME/.claude/skills"
 link "$repo/agents"             "$HOME/.claude/agents"
 link "$repo/hooks"              "$HOME/.claude/hooks"
 
-# Umbrella layer: <KHE_ROOT>/AGENTS.md and <KHE_ROOT>/CLAUDE.md.
-# AGENTS.md is a symlink to khe-meta/ESTATE.md (estate index).
-# CLAUDE.md is a real file containing `@AGENTS.md` - kept as a real file
-# so the @-import resolves against the umbrella, not the symlink target.
+# Umbrella layer: <KHE_ROOT>/AGENTS.md and <KHE_ROOT>/CLAUDE.md both symlink
+# to khe-meta/ESTATE.md. Markdown is markdown - the estate index works as
+# both AGENTS.md (for tools that read AGENTS.md) and CLAUDE.md (for Claude
+# Code) without any @-import indirection.
 echo
 if [[ -f "$khe_root/khe-meta/ESTATE.md" ]]; then
-    link             "$khe_root/khe-meta/ESTATE.md" "$khe_root/AGENTS.md"
-    write_if_changed "@AGENTS.md"                   "$khe_root/CLAUDE.md"
+    link "$khe_root/khe-meta/ESTATE.md" "$khe_root/AGENTS.md"
+    link "$khe_root/khe-meta/ESTATE.md" "$khe_root/CLAUDE.md"
 else
     echo "  note    umbrella files (khe-meta/ESTATE.md not found at $khe_root/khe-meta/)"
     echo "          clone khe-meta under $khe_root and re-run."

@@ -11,7 +11,7 @@ A small, hand-written foundation built directly from canonical sources - not for
 It does four jobs:
 
 1. **User-level config** - `AGENTS.md` and `CLAUDE.md` here are symlinked into `~/.codex/` and `~/.claude/`, so every project on every machine sees the same personal preferences.
-2. **Umbrella context wiring** - `install.{sh,ps1}` also creates `<KHE_ROOT>/AGENTS.md` (symlink → `khe-meta/ESTATE.md`) and `<KHE_ROOT>/CLAUDE.md`, so AI agents started at the portfolio root get the estate index automatically. See [`docs/resolution.md`](docs/resolution.md) for the layered model.
+2. **Umbrella context wiring** - `install.{sh,ps1}` also symlinks `<KHE_ROOT>/AGENTS.md` and `<KHE_ROOT>/CLAUDE.md` to `khe-meta/ESTATE.md`, so AI agents started at the umbrella root get the estate index automatically. Skipped with a note if `khe-meta` isn't cloned. See [`docs/resolution.md`](docs/resolution.md) for the layered model.
 3. **Curated workflow library** - `skills/` and `agents/` will hold a small, opinionated, every-file-justified set (Phase 1.5).
 4. **Snippet library** - `shared/` for per-project AGENTS.md content (Phase 3).
 
@@ -36,7 +36,7 @@ This repo bets on the **standard** ([agents.md](https://agents.md/)), not any sp
 | `agents/planner.md` | Plan-before-code subagent for non-trivial features and refactors. |
 | `shared/` | Tech-stack snippets for per-project AGENTS.md. Empty - Phase 3. |
 | `hooks/` | Claude Code hook scripts. Empty - add when you find a real problem to solve. |
-| `install.ps1` / `install.sh` | Symlink files into `~/.claude/` and `~/.codex/`, plus wire up `<KHE_ROOT>/AGENTS.md` and `<KHE_ROOT>/CLAUDE.md` for portfolio-root sessions. Falls back to copy on Windows without Developer Mode. |
+| `install.ps1` / `install.sh` | Symlink files into `~/.claude/` and `~/.codex/`, plus wire up `<KHE_ROOT>/AGENTS.md` and `<KHE_ROOT>/CLAUDE.md` for umbrella-root sessions. Falls back to copy on Windows without Developer Mode. |
 | `docs/resolution.md` | Reference for how `AGENTS.md` / `CLAUDE.md` are discovered and merged across user-global, umbrella, and project layers. Cited from canonical Anthropic + agents.md docs. |
 | `LAST_REVIEWED.md` | Quarterly review log against upstream sources. |
 | `LICENSE` | MIT. |

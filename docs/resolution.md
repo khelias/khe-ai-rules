@@ -9,7 +9,7 @@ docs (sources at the bottom).
 | Layer | Where | Loaded as | Set up by |
 |-------|-------|-----------|-----------|
 | **User-global** | `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md` | Always loaded, every session, every project. Personal preferences only. | `khe-ai-rules/install.{sh,ps1}` symlinks both to this repo. |
-| **Umbrella** | `<KHE_ROOT>/AGENTS.md`, `<KHE_ROOT>/CLAUDE.md` | Loaded when CWD is the umbrella, or auto-discovered by tools that walk up from a sub-repo. Estate index, cross-repo map. | `install.{sh,ps1}` symlinks `AGENTS.md` to `khe-meta/ESTATE.md` and writes a real `CLAUDE.md` containing `@AGENTS.md`. |
+| **Umbrella** | `<KHE_ROOT>/AGENTS.md`, `<KHE_ROOT>/CLAUDE.md` | Loaded when CWD is the umbrella, or auto-discovered by tools that walk up from a sub-repo. Estate index, cross-repo map. | `install.{sh,ps1}` symlinks both files to `khe-meta/ESTATE.md`. Markdown is markdown - the same content works as AGENTS.md and CLAUDE.md. |
 | **Project** | `<KHE_ROOT>/khe-*/AGENTS.md`, `<KHE_ROOT>/khe-*/CLAUDE.md` | Loaded when working in that repo. Project-specific commands, architecture, invariants. | Tracked in each project's git repo. |
 
 The three layers compose: more specific layers add to (and can override)
@@ -50,18 +50,19 @@ being edited. Working inside `khe-homelab/`, they get
 `khe-homelab/AGENTS.md`. Working at the umbrella root, they get
 `<KHE_ROOT>/AGENTS.md` (the symlink to `ESTATE.md`).
 
-## Why the umbrella `CLAUDE.md` is a real file, not a symlink
+## Why both umbrella files symlink to the same target
 
-`@`-imports resolve relative to the **target** of a symlink, not the
-symlink itself. If `<KHE_ROOT>/CLAUDE.md` were a symlink into
-`khe-ai-rules/`, then `@AGENTS.md` inside would resolve to
-`khe-ai-rules/AGENTS.md` (the user-global file), not
-`<KHE_ROOT>/AGENTS.md` (the estate index). To keep the import resolving
-against the umbrella, the file is written as a real one-liner by
-`install.{sh,ps1}`.
+`khe-meta/ESTATE.md` is plain markdown with no `@`-imports. Its content
+(estate index, deploy map, per-repo roadmap pointers) is what we want
+loaded when AI agents start at the umbrella, regardless of whether the
+tool reads `AGENTS.md` (Codex/Cursor/Aider) or `CLAUDE.md` (Claude
+Code). Symlinking both files to the same source means one file to
+maintain, two filenames so each tool finds what it expects.
 
-`<KHE_ROOT>/AGENTS.md` can stay a symlink because it has no imports
-inside - tools just read its content.
+If you ever need Claude-specific umbrella content (e.g. extra
+instructions only relevant to Claude Code), break the CLAUDE.md
+symlink, replace it with a real file, and `@`-import ESTATE.md plus
+the extras. Until then, the dual-symlink keeps things minimal.
 
 ## Multi-machine setup
 
@@ -70,8 +71,8 @@ each machine, then run `khe-ai-rules/install.{sh,ps1}`. The script
 infers `<KHE_ROOT>` as its own parent and creates:
 
 - User-global symlinks under `~/.claude/` and `~/.codex/`.
-- Umbrella `<KHE_ROOT>/AGENTS.md` symlink and `<KHE_ROOT>/CLAUDE.md`
-  one-line file.
+- Umbrella `<KHE_ROOT>/AGENTS.md` and `<KHE_ROOT>/CLAUDE.md`, both
+  symlinked to `khe-meta/ESTATE.md`.
 
 If `khe-meta/` is not cloned, the umbrella step is skipped with a
 warning (the user-global step still completes).

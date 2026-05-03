@@ -61,27 +61,6 @@ function Link-Path {
     }
 }
 
-function Write-IfChanged {
-    param([string]$content, [string]$target)
-    if (Test-Path $target) {
-        $item = Get-Item $target -Force -ErrorAction SilentlyContinue
-        if ($item.LinkType -eq "SymbolicLink") {
-            $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
-            $backup = "$target.backup-$stamp"
-            Move-Item -Path $target -Destination $backup
-            Write-Host "  backup  $target -> $backup" -ForegroundColor Yellow
-        } else {
-            $current = Get-Content -Raw $target
-            if ($current -eq "$content`n" -or $current -eq "$content`r`n") {
-                Write-Host "  skip    $target  (already current)" -ForegroundColor DarkGray
-                return
-            }
-        }
-    }
-    Set-Content -Path $target -Value $content -NoNewline:$false
-    Write-Host "  write   $target" -ForegroundColor Green
-}
-
 Write-Host ""
 Write-Host "Installing khe-ai-rules from: $repoRoot"
 Write-Host "KHE root:                     $kheRoot"
@@ -98,15 +77,15 @@ Link-Path "$repoRoot\skills"             "$claudeDir\skills"             "dir"
 Link-Path "$repoRoot\agents"             "$claudeDir\agents"             "dir"
 Link-Path "$repoRoot\hooks"              "$claudeDir\hooks"              "dir"
 
-# Umbrella layer: <KHE_ROOT>/AGENTS.md and <KHE_ROOT>/CLAUDE.md.
-# AGENTS.md is a symlink to khe-meta/ESTATE.md (estate index).
-# CLAUDE.md is a real file containing `@AGENTS.md` - kept as a real file
-# so the @-import resolves against the umbrella, not the symlink target.
+# Umbrella layer: <KHE_ROOT>/AGENTS.md and <KHE_ROOT>/CLAUDE.md both symlink
+# to khe-meta/ESTATE.md. Markdown is markdown - the estate index works as
+# both AGENTS.md (for tools that read AGENTS.md) and CLAUDE.md (for Claude
+# Code) without any @-import indirection.
 Write-Host ""
 $estateSource = Join-Path $kheRoot "khe-meta\ESTATE.md"
 if (Test-Path $estateSource) {
-    Link-Path        $estateSource           "$kheRoot\AGENTS.md"       "file"
-    Write-IfChanged  "@AGENTS.md"            "$kheRoot\CLAUDE.md"
+    Link-Path $estateSource "$kheRoot\AGENTS.md" "file"
+    Link-Path $estateSource "$kheRoot\CLAUDE.md" "file"
 } else {
     Write-Host "  note    umbrella files (khe-meta\ESTATE.md not found at $kheRoot\khe-meta\)" -ForegroundColor DarkGray
     Write-Host "          clone khe-meta under $kheRoot and re-run." -ForegroundColor DarkGray
