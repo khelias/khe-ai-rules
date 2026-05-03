@@ -76,7 +76,7 @@ if [[ -f "$khe_root/khe-meta/ESTATE.md" ]]; then
     link             "$khe_root/khe-meta/ESTATE.md" "$khe_root/AGENTS.md"
     write_if_changed "@AGENTS.md"                   "$khe_root/CLAUDE.md"
 else
-    echo "  skip    umbrella files (khe-meta/ESTATE.md not found at $khe_root/khe-meta/)"
+    echo "  note    umbrella files (khe-meta/ESTATE.md not found at $khe_root/khe-meta/)"
     echo "          clone khe-meta under $khe_root and re-run."
 fi
 

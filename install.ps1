@@ -108,7 +108,7 @@ if (Test-Path $estateSource) {
     Link-Path        $estateSource           "$kheRoot\AGENTS.md"       "file"
     Write-IfChanged  "@AGENTS.md"            "$kheRoot\CLAUDE.md"
 } else {
-    Write-Host "  skip    umbrella files (khe-meta\ESTATE.md not found at $kheRoot\khe-meta\)" -ForegroundColor DarkGray
+    Write-Host "  note    umbrella files (khe-meta\ESTATE.md not found at $kheRoot\khe-meta\)" -ForegroundColor DarkGray
     Write-Host "          clone khe-meta under $kheRoot and re-run." -ForegroundColor DarkGray
 }
 
