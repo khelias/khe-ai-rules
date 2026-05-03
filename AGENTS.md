@@ -40,6 +40,23 @@ Keep this file under 200 lines. It's loaded into every session, so size costs to
 
 This is a judgment call, not a hard rule.
 
+## Maintaining project AGENTS.md
+
+When a structural change lands in a project (deps bump that touches a
+named library, refactor that moves files, new architectural decision,
+build/test/deploy command change, new HARD invariant), update that
+project's `AGENTS.md` in the SAME commit. AGENTS.md should reflect
+current reality, not historical reality.
+
+Prefer descriptive facts over prohibitions. "Tailwind v3 currently"
+beats "DO NOT use v4" - the prohibition becomes silently wrong on the
+day v4 lands. Architectural prohibitions stay (security, invariants),
+but couple them with an override path ("without an ADR") so the rule
+is not a permanent lock.
+
+The `audit-agents-md` skill (in `~/.claude/skills/`) can be invoked
+on demand to check whether a project's AGENTS.md drifted from reality.
+
 ## Verification
 
 The agent MUST verify changes before declaring done:
