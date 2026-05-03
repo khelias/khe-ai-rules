@@ -5,8 +5,10 @@ YAML frontmatter that the main agent dispatches to.
 
 ## What's here
 
-Nothing yet. **Phase 1.5**: review existing agent libraries, copy what fits
-with attribution, write minimal versions for what doesn't.
+- [`code-reviewer.md`](code-reviewer.md) — second-pass reviewer with confidence filter (>80%) and severity rubric (CRITICAL/HIGH/MEDIUM/LOW). Adapted from EWC's code-reviewer, trimmed of framework-specific deep-dives.
+- [`planner.md`](planner.md) — plan-before-code for non-trivial features and refactors. Adapted from EWC's planner, replaced 70-line Stripe example with shorter rate-limit example. Changed `model: opus` → `model: sonnet`.
+
+Each file ends with a "Source" section attributing the EWC original.
 
 ## When to add an agent
 

@@ -14,8 +14,11 @@ description: When to use this skill (one sentence — the agent matches against 
 
 ## What's here
 
-Nothing yet. **Phase 1.5**: review existing skill libraries, copy what fits
-this workflow with attribution, write minimal versions for what doesn't.
+- [`verification.md`](verification.md) — run build/typecheck/test/lint and report honestly. Adapted from EWC's verification-loop, stripped of hardcoded `npm` commands and coverage dogma.
+- [`tdd.md`](tdd.md) — RED/GREEN/REFACTOR cycle with git checkpoints. Adapted from EWC's tdd-workflow, stripped of framework-specific examples (was 463 lines, now 63).
+- [`commit-style.md`](commit-style.md) — Conventional Commits format. The 30 useful lines extracted from EWC's 716-line git-workflow tutorial.
+
+Each file ends with a "Source" section attributing the EWC original and noting what was kept vs trimmed.
 
 ## Inspiration sources (read, don't fork)
 

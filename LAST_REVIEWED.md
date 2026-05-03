@@ -4,7 +4,8 @@ Track when this repo was last reviewed against upstream best practices.
 
 | Date       | Notes |
 |------------|-------|
-| 2026-05-03 | Phase 1: frame committed. No skill/agent content yet. Foundation built from agents.md spec + Anthropic memory docs + OpenAI Codex AGENTS.md guide + GitHub Blog 2500-repo analysis. |
+| 2026-05-03 | Phase 1.5: skills/ (verification, tdd, commit-style) + agents/ (code-reviewer, planner) added. Reviewed 5 EWC source files (1750 lines combined), kept ~25% as adapted, wrote rest from scratch. Each file attributes source and notes what was stripped. |
+| 2026-05-03 | Phase 1: frame committed. Foundation built from agents.md spec + Anthropic memory docs + OpenAI Codex AGENTS.md guide + GitHub Blog 2500-repo analysis. |
 
 ## Quarterly review checklist
 

@@ -26,8 +26,11 @@ This repo bets on the **standard** ([agents.md](https://agents.md/)), not any sp
 | `CLAUDE.md` | One-line `@AGENTS.md` import + Claude-only extras section. → `~/.claude/CLAUDE.md`. |
 | `settings.json` | Claude Code settings. Pre-set with token-optimization defaults (`model: sonnet`, `MAX_THINKING_TOKENS=10000`, `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50`). → `~/.claude/settings.json`. |
 | `codex/config.toml` | OpenAI Codex CLI config, commented placeholder. → `~/.codex/config.toml`. |
-| `skills/` | Reusable workflow guides. Empty — Phase 1.5. |
-| `agents/` | Specialized subagents. Empty — Phase 1.5. |
+| `skills/verification.md` | Run build/typecheck/test/lint and report honestly before declaring done. |
+| `skills/tdd.md` | RED/GREEN/REFACTOR cycle with git checkpoints, for new features and bug fixes. |
+| `skills/commit-style.md` | Conventional Commits format. Body explains WHY, not WHAT. |
+| `agents/code-reviewer.md` | Second-pass reviewer with confidence filter (>80%) and severity rubric. |
+| `agents/planner.md` | Plan-before-code subagent for non-trivial features and refactors. |
 | `shared/` | Tech-stack snippets for per-project AGENTS.md. Empty — Phase 3. |
 | `hooks/` | Claude Code hook scripts. Empty — add when you find a real problem to solve. |
 | `install.ps1` / `install.sh` | Symlink files into `~/.claude/` and `~/.codex/`. Falls back to copy on Windows without Developer Mode. |
@@ -62,8 +65,8 @@ This repo is foundation only. Personal preferences and project-specific patterns
 
 | Phase | Scope |
 |-------|-------|
-| **1** (this commit) | Pure scaffolding: structure, install scripts, AGENTS.md/CLAUDE.md/settings.json placeholders. Empty `skills/`, `agents/`, `hooks/`, `shared/`. |
-| **1.5** | Review existing skill/agent libraries (EWC, citypaul, etc.); copy what fits with attribution; write minimal versions for what doesn't. |
+| **1** | Pure scaffolding: structure, install scripts, AGENTS.md/CLAUDE.md/settings.json placeholders. |
+| **1.5** (this commit) | Curated `skills/` (3 files) + `agents/` (2 files), reviewed file-by-file from EWC and trimmed/rewritten. Total ~425 lines, every rule justified. |
 | **2** | Fill in personal preferences in `AGENTS.md` (Communication, Code style sections). |
 | **3** | Extract reusable tech-stack snippets from existing project `CLAUDE.md` / `.cursor/rules/` into `shared/`. |
 | **4** | Per-project migration: replace existing CLAUDE.md / .cursor/rules in project repos with thin per-project `AGENTS.md` + imports from `shared/`. |
