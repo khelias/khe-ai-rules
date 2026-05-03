@@ -1,4 +1,5 @@
-# install.ps1 - symlink khe-ai-rules into ~/.claude and ~/.codex
+# install.ps1 - symlink khe-ai-rules into ~/.claude and ~/.codex,
+# and wire up umbrella-level AGENTS.md / CLAUDE.md at <KHE_ROOT>/.
 #
 # Windows requires Developer Mode enabled OR an admin PowerShell to create
 # symlinks. With Dev Mode enabled, sign out + sign in once after enabling
@@ -8,9 +9,13 @@
 # Directory symlinks cannot fall back - they require admin or Dev Mode.
 #
 # Re-runs are idempotent: existing correct symlinks are skipped.
+#
+# Layer model: see docs/resolution.md for how the user-global, umbrella,
+# and per-project layers compose.
 
 $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$kheRoot  = Split-Path -Parent $repoRoot
 
 $claudeDir = Join-Path $env:USERPROFILE ".claude"
 $codexDir  = Join-Path $env:USERPROFILE ".codex"
@@ -56,11 +61,33 @@ function Link-Path {
     }
 }
 
+function Write-IfChanged {
+    param([string]$content, [string]$target)
+    if (Test-Path $target) {
+        $item = Get-Item $target -Force -ErrorAction SilentlyContinue
+        if ($item.LinkType -eq "SymbolicLink") {
+            $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
+            $backup = "$target.backup-$stamp"
+            Move-Item -Path $target -Destination $backup
+            Write-Host "  backup  $target -> $backup" -ForegroundColor Yellow
+        } else {
+            $current = Get-Content -Raw $target
+            if ($current -eq "$content`n" -or $current -eq "$content`r`n") {
+                Write-Host "  skip    $target  (already current)" -ForegroundColor DarkGray
+                return
+            }
+        }
+    }
+    Set-Content -Path $target -Value $content -NoNewline:$false
+    Write-Host "  write   $target" -ForegroundColor Green
+}
+
 Write-Host ""
 Write-Host "Installing khe-ai-rules from: $repoRoot"
+Write-Host "KHE root:                     $kheRoot"
 Write-Host ""
 
-# Files
+# User-global layer: ~/.claude/ and ~/.codex/
 Link-Path "$repoRoot\AGENTS.md"          "$codexDir\AGENTS.md"           "file"
 Link-Path "$repoRoot\CLAUDE.md"          "$claudeDir\CLAUDE.md"          "file"
 Link-Path "$repoRoot\settings.json"      "$claudeDir\settings.json"      "file"
@@ -70,6 +97,20 @@ Link-Path "$repoRoot\codex\config.toml"  "$codexDir\config.toml"         "file"
 Link-Path "$repoRoot\skills"             "$claudeDir\skills"             "dir"
 Link-Path "$repoRoot\agents"             "$claudeDir\agents"             "dir"
 Link-Path "$repoRoot\hooks"              "$claudeDir\hooks"              "dir"
+
+# Umbrella layer: <KHE_ROOT>/AGENTS.md and <KHE_ROOT>/CLAUDE.md.
+# AGENTS.md is a symlink to khe-meta/ESTATE.md (estate index).
+# CLAUDE.md is a real file containing `@AGENTS.md` - kept as a real file
+# so the @-import resolves against the umbrella, not the symlink target.
+Write-Host ""
+$estateSource = Join-Path $kheRoot "khe-meta\ESTATE.md"
+if (Test-Path $estateSource) {
+    Link-Path        $estateSource           "$kheRoot\AGENTS.md"       "file"
+    Write-IfChanged  "@AGENTS.md"            "$kheRoot\CLAUDE.md"
+} else {
+    Write-Host "  skip    umbrella files (khe-meta\ESTATE.md not found at $kheRoot\khe-meta\)" -ForegroundColor DarkGray
+    Write-Host "          clone khe-meta under $kheRoot and re-run." -ForegroundColor DarkGray
+}
 
 Write-Host ""
 Write-Host "Done. Source of truth: $repoRoot" -ForegroundColor Green
