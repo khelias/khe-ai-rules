@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install pyyaml
+
+      - name: Validate frontmatter (agents/, skills/)
+        run: python scripts/validate_frontmatter.py
+
+      - name: Check LAST_REVIEWED freshness
+        run: python scripts/check_freshness.py
+
+  links:
+    name: Link check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore lychee cache
+        uses: actions/cache@v4
+        with:
+          path: .lycheecache
+          key: cache-lychee-${{ github.sha }}
+          restore-keys: cache-lychee-
+
+      - name: Lychee link check
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress
+            --cache
+            --max-cache-age 1d
+            --max-concurrency 5
+            --retry-wait-time 2
+            --max-retries 2
+            --exclude-mail
+            './**/*.md'
+          fail: true
+
+  install:
+    name: install.sh idempotency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run install.sh twice and assert idempotency
+        shell: bash
+        run: |
+          set -euo pipefail
+          export HOME=$(mktemp -d)
+          echo "Using HOME=$HOME"
+
+          echo ""
+          echo "=== First run ==="
+          first=$(bash install.sh)
+          echo "$first"
+          first_links=$(echo "$first" | grep -c '^  link    ' || true)
+
+          echo ""
+          echo "=== Second run ==="
+          second=$(bash install.sh)
+          echo "$second"
+          second_links=$(echo "$second" | grep -c '^  link    ' || true)
+          second_skips=$(echo "$second" | grep -c '^  skip    ' || true)
+          second_backups=$(echo "$second" | grep -c '^  backup  ' || true)
+
+          echo ""
+          echo "First run created $first_links symlinks."
+          echo "Second run: $second_links new links, $second_skips skipped, $second_backups backups."
+
+          fail=0
+          if [ "$second_links" -ne 0 ]; then
+            echo "FAIL: second run created $second_links new symlinks"
+            fail=1
+          fi
+          if [ "$second_backups" -ne 0 ]; then
+            echo "FAIL: second run created $second_backups backups"
+            fail=1
+          fi
+          if [ "$second_skips" -ne "$first_links" ]; then
+            echo "FAIL: second-run skip count ($second_skips) != first-run link count ($first_links)"
+            fail=1
+          fi
+          if [ "$fail" -ne 0 ]; then
+            exit 1
+          fi
+          echo "OK: install.sh is idempotent."

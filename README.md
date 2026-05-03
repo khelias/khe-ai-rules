@@ -1,5 +1,7 @@
 # khe-ai-rules
 
+[![CI](https://github.com/khelias/khe-ai-rules/actions/workflows/ci.yml/badge.svg)](https://github.com/khelias/khe-ai-rules/actions/workflows/ci.yml)
+
 Personal AI coding agent configuration for [Claude Code](https://claude.com/claude-code), [OpenAI Codex CLI](https://developers.openai.com/codex/), and any tool that reads `AGENTS.md`.
 
 ## What this is
