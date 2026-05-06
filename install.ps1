@@ -1,5 +1,21 @@
-# install.ps1 - symlink khe-ai-rules into ~/.claude and ~/.codex,
-# and wire up umbrella-level AGENTS.md / CLAUDE.md at <KHE_ROOT>/.
+# install.ps1 - wire khe-ai-rules into the KHE umbrella as project-scoped
+# Claude Code config.
+#
+# Layout (KHE_ROOT = parent dir of this repo):
+#
+#   <KHE_ROOT>\AGENTS.md            -> khe-ai-rules\AGENTS.md
+#   <KHE_ROOT>\CLAUDE.md            -> khe-ai-rules\CLAUDE-umbrella.md (or CLAUDE.md if khe-meta missing)
+#   <KHE_ROOT>\.claude\settings.json -> khe-ai-rules\settings.json
+#   <KHE_ROOT>\.claude\skills\      -> khe-ai-rules\skills\
+#   <KHE_ROOT>\.claude\agents\      -> khe-ai-rules\agents\
+#   <KHE_ROOT>\.claude\hooks\       -> khe-ai-rules\hooks\
+#
+# Assumes Claude Code and Codex are always launched with cwd at <KHE_ROOT>.
+# This install does NOT touch ~/.claude/ or ~/.codex/ - those belong to
+# other projects on this machine and stay unaffected.
+#
+# Existing local files in <KHE_ROOT>\.claude\ (settings.local.json,
+# launch.json, etc.) are preserved untouched.
 #
 # Windows requires Developer Mode enabled OR an admin PowerShell to create
 # symlinks. With Dev Mode enabled, sign out + sign in once after enabling
@@ -9,19 +25,13 @@
 # Directory symlinks cannot fall back - they require admin or Dev Mode.
 #
 # Re-runs are idempotent: existing correct symlinks are skipped.
-#
-# Layer model: see docs/resolution.md for how the user-global, umbrella,
-# and per-project layers compose.
 
 $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $kheRoot  = Split-Path -Parent $repoRoot
 
-$claudeDir = Join-Path $env:USERPROFILE ".claude"
-$codexDir  = Join-Path $env:USERPROFILE ".codex"
-
-New-Item -ItemType Directory -Force -Path $claudeDir | Out-Null
-New-Item -ItemType Directory -Force -Path $codexDir  | Out-Null
+$claudeProjectDir = Join-Path $kheRoot ".claude"
+New-Item -ItemType Directory -Force -Path $claudeProjectDir | Out-Null
 
 function Test-CorrectLink {
     param([string]$source, [string]$target)
@@ -38,6 +48,10 @@ function Test-CorrectLink {
 
 function Link-Path {
     param([string]$source, [string]$target, [string]$kind)
+    if (-not (Test-Path $source)) {
+        Write-Host "  miss    $source  (source missing, skipping)" -ForegroundColor DarkGray
+        return
+    }
     if (Test-CorrectLink $source $target) {
         Write-Host "  skip    $target  (already linked)" -ForegroundColor DarkGray
         return
@@ -66,30 +80,26 @@ Write-Host "Installing khe-ai-rules from: $repoRoot"
 Write-Host "KHE root:                     $kheRoot"
 Write-Host ""
 
-# User-global layer: ~/.claude/ and ~/.codex/
-Link-Path "$repoRoot\AGENTS.md"          "$codexDir\AGENTS.md"           "file"
-Link-Path "$repoRoot\CLAUDE.md"          "$claudeDir\CLAUDE.md"          "file"
-Link-Path "$repoRoot\settings.json"      "$claudeDir\settings.json"      "file"
-Link-Path "$repoRoot\codex\config.toml"  "$codexDir\config.toml"         "file"
+# AGENTS.md - personal prefs for any agents.md-aware tool (Codex etc.)
+Link-Path "$repoRoot\AGENTS.md" "$kheRoot\AGENTS.md" "file"
 
-# Directories - Claude Code lazy-loads skills/agents from ~/.claude/skills/ and ~/.claude/agents/
-Link-Path "$repoRoot\skills"             "$claudeDir\skills"             "dir"
-Link-Path "$repoRoot\agents"             "$claudeDir\agents"             "dir"
-Link-Path "$repoRoot\hooks"              "$claudeDir\hooks"              "dir"
-
-# Umbrella layer: <KHE_ROOT>/AGENTS.md and <KHE_ROOT>/CLAUDE.md both symlink
-# to khe-meta/ESTATE.md. Markdown is markdown - the estate index works as
-# both AGENTS.md (for tools that read AGENTS.md) and CLAUDE.md (for Claude
-# Code) without any @-import indirection.
-Write-Host ""
+# CLAUDE.md - umbrella variant if khe-meta is present, plain personal otherwise.
 $estateSource = Join-Path $kheRoot "khe-meta\ESTATE.md"
 if (Test-Path $estateSource) {
-    Link-Path $estateSource "$kheRoot\AGENTS.md" "file"
-    Link-Path $estateSource "$kheRoot\CLAUDE.md" "file"
+    Link-Path "$repoRoot\CLAUDE-umbrella.md" "$kheRoot\CLAUDE.md" "file"
 } else {
-    Write-Host "  note    umbrella files (khe-meta\ESTATE.md not found at $kheRoot\khe-meta\)" -ForegroundColor DarkGray
-    Write-Host "          clone khe-meta under $kheRoot and re-run." -ForegroundColor DarkGray
+    Write-Host "  note    khe-meta\ESTATE.md not found at $kheRoot\khe-meta\" -ForegroundColor DarkGray
+    Write-Host "          falling back to CLAUDE.md without estate index." -ForegroundColor DarkGray
+    Write-Host "          clone khe-meta under $kheRoot and re-run for full umbrella." -ForegroundColor DarkGray
+    Link-Path "$repoRoot\CLAUDE.md" "$kheRoot\CLAUDE.md" "file"
 }
+
+# Project-scoped Claude Code config under <KHE_ROOT>\.claude\.
+# Local files (settings.local.json, launch.json, etc.) are not touched.
+Link-Path "$repoRoot\settings.json" "$claudeProjectDir\settings.json" "file"
+Link-Path "$repoRoot\skills"        "$claudeProjectDir\skills"        "dir"
+Link-Path "$repoRoot\agents"        "$claudeProjectDir\agents"        "dir"
+Link-Path "$repoRoot\hooks"         "$claudeProjectDir\hooks"         "dir"
 
 Write-Host ""
 Write-Host "Done. Source of truth: $repoRoot" -ForegroundColor Green

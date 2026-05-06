@@ -1,13 +1,17 @@
 # Personal AGENTS.md
 
-User-level instructions for AI coding agents. Auto-loaded by:
+Personal instructions for AI coding agents, scoped to the KHE umbrella.
+Auto-loaded by:
 
-- OpenAI Codex CLI (this file via `~/.codex/AGENTS.md`)
-- Claude Code (via `~/.claude/CLAUDE.md`, which `@`-imports this file)
-- Cursor, Aider, Copilot, and 20+ other AGENTS.md-aware tools
+- OpenAI Codex CLI (via `<KHE_ROOT>/AGENTS.md`, symlinked to this file)
+- Claude Code (via `<KHE_ROOT>/CLAUDE.md` which `@`-imports this file)
+- Cursor, Aider, Copilot, and 20+ other AGENTS.md-aware tools, when run with cwd at `<KHE_ROOT>`
 
-This file holds **personal preferences** that apply to every project.
-For project-specific instructions, use a per-project `AGENTS.md`.
+This file holds **personal preferences** that apply to every project
+under the KHE umbrella. Other projects on the same machine are not
+affected by this file - their own `~/.claude/` or per-project setup
+applies instead. For KHE-project-specific instructions, use a
+per-project `AGENTS.md`.
 
 Keep this file under 200 lines. It's loaded into every session, so size costs tokens forever.
 
@@ -54,8 +58,9 @@ day v4 lands. Architectural prohibitions stay (security, invariants),
 but couple them with an override path ("without an ADR") so the rule
 is not a permanent lock.
 
-The `audit-agents-md` skill (in `~/.claude/skills/`) can be invoked
-on demand to check whether a project's AGENTS.md drifted from reality.
+The `audit-agents-md` skill (loaded from `<KHE_ROOT>/.claude/skills/`)
+can be invoked on demand to check whether a project's AGENTS.md drifted
+from reality.
 
 ## Verification
 

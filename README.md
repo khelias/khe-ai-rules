@@ -10,8 +10,8 @@ A small, hand-written foundation built directly from canonical sources - not for
 
 It does four jobs:
 
-1. **User-level config** - `AGENTS.md` and `CLAUDE.md` here are symlinked into `~/.codex/` and `~/.claude/`, so every project on every machine sees the same personal preferences.
-2. **Umbrella context wiring** - `install.{sh,ps1}` also symlinks `<KHE_ROOT>/AGENTS.md` and `<KHE_ROOT>/CLAUDE.md` to `khe-meta/ESTATE.md`, so AI agents started at the umbrella root get the estate index automatically. Skipped with a note if `khe-meta` isn't cloned. See [`docs/resolution.md`](docs/resolution.md) for the layered model.
+1. **Umbrella-scoped config** - `install.{sh,ps1}` symlinks this repo's `AGENTS.md`, `CLAUDE.md`, `settings.json`, `skills/`, `agents/`, and `hooks/` into `<KHE_ROOT>/` and `<KHE_ROOT>/.claude/`. Personal preferences apply when working under the KHE umbrella; other projects on the same machine are unaffected.
+2. **Estate index wiring** - when `khe-meta` is cloned alongside this repo, `<KHE_ROOT>/CLAUDE.md` is linked to `CLAUDE-umbrella.md` which `@`-imports both `AGENTS.md` and `khe-meta/ESTATE.md`. AI agents started at the umbrella root get personal prefs and the estate index together. Skipped gracefully if `khe-meta` isn't cloned. See [`docs/resolution.md`](docs/resolution.md) for the layered model.
 3. **Curated workflow library** - `skills/` and `agents/` will hold a small, opinionated, every-file-justified set (Phase 1.5).
 4. **Snippet library** - `shared/` for per-project AGENTS.md content (Phase 3).
 
@@ -25,10 +25,11 @@ This repo bets on the **standard** ([agents.md](https://agents.md/)), not any sp
 
 | Path | Purpose |
 |------|---------|
-| `AGENTS.md` | User-level prefs, scaffold only. → `~/.codex/AGENTS.md`. Auto-read by 20+ AI tools. |
-| `CLAUDE.md` | One-line `@AGENTS.md` import + Claude-only extras section. → `~/.claude/CLAUDE.md`. |
-| `settings.json` | Claude Code settings. Pre-set with token-optimization defaults (`model: sonnet`, `MAX_THINKING_TOKENS=10000`, `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50`). → `~/.claude/settings.json`. |
-| `codex/config.toml` | OpenAI Codex CLI config, commented placeholder. → `~/.codex/config.toml`. |
+| `AGENTS.md` | Personal prefs, tool-agnostic. → `<KHE_ROOT>/AGENTS.md`. Auto-read by Codex and 20+ other agents.md-aware tools when launched at the KHE root. |
+| `CLAUDE.md` | One-line `@AGENTS.md` import + Claude-only extras section. Used by `install` as the fallback `<KHE_ROOT>/CLAUDE.md` target when `khe-meta` is not cloned. |
+| `CLAUDE-umbrella.md` | Combines `@AGENTS.md` and `@../khe-meta/ESTATE.md`. Used as the `<KHE_ROOT>/CLAUDE.md` target when `khe-meta` is cloned alongside this repo. |
+| `settings.json` | Claude Code settings. Pre-set with token-optimization defaults (`model: sonnet`, `MAX_THINKING_TOKENS=10000`, `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50`). → `<KHE_ROOT>/.claude/settings.json`. |
+| `codex/config.toml` | OpenAI Codex CLI config, commented placeholder. Not wired by `install` - Codex reads its CLI config from `~/.codex/config.toml` (user-global, no project-scoped equivalent). Copy manually if you need it. |
 | `skills/verification.md` | Run build/typecheck/test/lint and report honestly before declaring done. |
 | `skills/tdd.md` | RED/GREEN/REFACTOR cycle with git checkpoints, for new features and bug fixes. |
 | `skills/commit-style.md` | Conventional Commits format. Body explains WHY, not WHAT. |
@@ -36,8 +37,8 @@ This repo bets on the **standard** ([agents.md](https://agents.md/)), not any sp
 | `agents/planner.md` | Plan-before-code subagent for non-trivial features and refactors. |
 | `shared/` | Tech-stack snippets for per-project AGENTS.md. Empty - Phase 3. |
 | `hooks/` | Claude Code hook scripts. Empty - add when you find a real problem to solve. |
-| `install.ps1` / `install.sh` | Symlink files into `~/.claude/` and `~/.codex/`, plus wire up `<KHE_ROOT>/AGENTS.md` and `<KHE_ROOT>/CLAUDE.md` for umbrella-root sessions. Falls back to copy on Windows without Developer Mode. |
-| `docs/resolution.md` | Reference for how `AGENTS.md` / `CLAUDE.md` are discovered and merged across user-global, umbrella, and project layers. Cited from canonical Anthropic + agents.md docs. |
+| `install.ps1` / `install.sh` | Symlink files into `<KHE_ROOT>/` and `<KHE_ROOT>/.claude/`. Does not touch `~/.claude/` or `~/.codex/`. Falls back to copy on Windows without Developer Mode. |
+| `docs/resolution.md` | Reference for how `AGENTS.md` / `CLAUDE.md` are discovered and merged across umbrella and project layers. Cited from canonical Anthropic + agents.md docs. |
 | `LAST_REVIEWED.md` | Quarterly review log against upstream sources. |
 | `LICENSE` | MIT. |
 
@@ -45,12 +46,16 @@ You should be able to read every file in this repo in 30 minutes. If you can't, 
 
 ## Install
 
+This repo is project-scoped to the KHE umbrella. Clone it (and `khe-meta`, optionally) under a common parent directory - that parent becomes `<KHE_ROOT>`. The install script wires symlinks under `<KHE_ROOT>/` and `<KHE_ROOT>/.claude/` only; it never modifies `~/.claude/` or `~/.codex/`, so other projects on the same machine remain untouched.
+
+Always launch Claude Code and Codex with the cwd at `<KHE_ROOT>`.
+
 ### Windows (PowerShell)
 
 ```powershell
+cd <KHE_ROOT>
 git clone https://github.com/khelias/khe-ai-rules
-cd khe-ai-rules
-.\install.ps1
+.\khe-ai-rules\install.ps1
 ```
 
 Symlinks need Developer Mode (`Settings → Privacy & security → For developers → Developer Mode`) or an admin PowerShell. Without either, the script copies files and warns you to re-run after edits.
@@ -58,9 +63,9 @@ Symlinks need Developer Mode (`Settings → Privacy & security → For developer
 ### Unix
 
 ```bash
+cd <KHE_ROOT>
 git clone https://github.com/khelias/khe-ai-rules
-cd khe-ai-rules
-./install.sh
+./khe-ai-rules/install.sh
 ```
 
 ## Phase plan
