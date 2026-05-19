@@ -42,6 +42,19 @@ Keep this file under 200 lines. It's loaded into every session, so size costs to
 - However, no module should be completely undocumented. If you touch a feature that has no doc string or no README mention, add a one-line summary while you're there.
 - When uncertain whether something needs documenting, ASK before adding.
 
+After a non-trivial change (new feature, refactor that moves files, removed
+concept, behaviour shift), sweep the project's existing docs for staleness
+before declaring done. Minimum sweep targets:
+
+- `README.md`, `ARCHITECTURE.md`, `ROADMAP.md` if present.
+- `AGENTS.md` / `CLAUDE.md` (project + umbrella).
+- Affected ADRs (the status field and any claims about current behaviour).
+- Other `docs/*.md` whose subject overlaps the change.
+
+The test: would a fresh agent reading these docs after my change form a
+misleading mental model? If yes, update inline in the same commit. Update
+existing files; do NOT create new doc files without asking.
+
 This is a judgment call, not a hard rule.
 
 ## Maintaining project AGENTS.md
