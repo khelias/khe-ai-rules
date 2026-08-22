@@ -39,6 +39,7 @@ This repo bets on the **standard** ([agents.md](https://agents.md/)), not any sp
 | `hooks/` | Claude Code hook scripts. Empty - add when you find a real problem to solve. |
 | `install.ps1` / `install.sh` | Symlink files into `<KHE_ROOT>/` and `<KHE_ROOT>/.claude/`. Does not touch `~/.claude/` or `~/.codex/`. Falls back to copy on Windows without Developer Mode. |
 | `docs/resolution.md` | Reference for how `AGENTS.md` / `CLAUDE.md` are discovered and merged across umbrella and project layers. Cited from canonical Anthropic + agents.md docs. |
+| `renovate.json` | Renovate config. The only managed dependencies here are the GitHub Actions in `ci.yml`; non-major bumps automerge, majors wait for dashboard approval. |
 | `LAST_REVIEWED.md` | Quarterly review log against upstream sources. |
 | `LICENSE` | MIT. |
 
